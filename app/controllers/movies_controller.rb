@@ -11,7 +11,7 @@ class MoviesController < ApplicationController
     if @sort_by.nil?
       @movies = Movie.all
     else
-      @movies = Movie.order(params[:sort_by].to_sym => :asc).all
+      @movies = Movie.find(:all, :order => "#{@sort_by} ASC")
     end
   end
 
