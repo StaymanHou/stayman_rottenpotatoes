@@ -7,11 +7,16 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.get_all_ratings
     @sort_by = (params.has_key? :sort_by and ["title", "release_date"].include?(params[:sort_by])) ? params[:sort_by] : nil
-    if @sort_by.nil?
-      @movies = Movie.all
-    else
+    @selected_ratings = (params.has_key? :ratings) ? params[:ratings].keys : @all_ratings
+    @selected_ratings = @all_ratings & @selected_ratings
+    if not @sort_by.nil?
       @movies = Movie.find(:all, :order => "#{@sort_by} ASC")
+    elsif not @selected_ratings.length > 0
+      @movies = Movie.where("rating == ?", @selected_ratings)
+    else
+      @movies = Movie.all
     end
   end
 
