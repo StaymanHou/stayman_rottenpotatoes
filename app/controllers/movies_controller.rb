@@ -8,9 +8,27 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.get_all_ratings
-    @sort_by = (params.has_key? :sort_by and ["title", "release_date"].include?(params[:sort_by])) ? params[:sort_by] : nil
-    @selected_ratings = (params.has_key? :ratings) ? params[:ratings].keys : @all_ratings
-    @selected_ratings = @all_ratings & @selected_ratings
+    if params.has_key? :sort_by and ["title", "release_date"].include?(params[:sort_by])
+      @sort_by = params[:sort_by]
+      session[:sort_by] = @sort_by
+    else
+      if session.has_key? :sort_by
+        @sort_by = session[:sort_by]
+      else
+        @sort_by = nil
+      end
+    end
+    if params.has_key? :ratings and (@all_ratings & params[:ratings].keys).length > 0
+      @selected_ratings = @all_ratings & params[:ratings].keys
+      session[:selected_ratings] = @selected_ratings
+    else
+      if session.has_key? :selected_ratings
+        @selected_ratings = session[:selected_ratings]
+      else
+        @selected_ratings = @all_ratings
+        session[:selected_ratings] = @selected_ratings
+      end
+    end      
     if not @sort_by.nil?
       @movies = Movie.where(:rating => @selected_ratings).find(:all, :order => "#{@sort_by} ASC")
     else
