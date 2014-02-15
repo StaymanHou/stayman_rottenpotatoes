@@ -14,7 +14,7 @@ class MoviesController < ApplicationController
     if not @sort_by.nil?
       @movies = Movie.find(:all, :rating => @selected_ratings, :order => "#{@sort_by} ASC")
     else
-      @movies = Movie.find(:all, :rating => @selected_ratings)
+      @movies = Movie.where(:rating => @selected_ratings)
     end
   end
 
