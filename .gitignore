@@ -1,4 +1,3 @@
-db/
-log/
-test/
-tmp/
+db/*.sqlite3
+log/*.log
+tmp/**/*
